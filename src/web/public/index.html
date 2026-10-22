@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>AI Project Copilot</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">✳</span><div><strong>Project Copilot</strong><small>Local codebase intelligence</small></div></div>
+    <div class="provider-controls">
+      <div id="provider-status" class="provider-status">Checking Gemini…</div>
+      <button id="gemini-test" class="button button-secondary" type="button">Check Gemini</button>
+    </div>
+  </header>
+  <main class="layout">
+    <aside class="sidebar">
+      <div class="section-heading"><h2>Projects</h2><span class="local-badge">LOCAL</span></div>
+      <form id="project-form" class="project-form">
+        <label for="project-root">Project directory</label>
+        <div class="project-input-row">
+          <input id="project-root" name="root" placeholder="C:\work\my-project" required autocomplete="off">
+          <button class="icon-button" type="submit" title="Add project" aria-label="Add project">+</button>
+        </div>
+        <p class="hint">Enter a directory path to explicitly allow local indexing.</p>
+      </form>
+      <div id="project-list" class="project-list"></div>
+      <div class="sidebar-note"><span class="status-dot"></span> Server bound to this computer only</div>
+    </aside>
+    <section class="workspace">
+      <section class="welcome" id="welcome">
+        <div class="welcome-icon">✳</div>
+        <p class="eyebrow">YOUR CODEBASE, UNDERSTOOD</p>
+        <h1>What are you building?</h1>
+        <p class="welcome-copy">Add a project directory, build its local index, then ask questions with source citations—or prepare a focused prompt for Claude Code.</p>
+      </section>
+      <section id="project-view" class="project-view hidden">
+        <div class="project-header">
+          <div><p class="eyebrow">ACTIVE PROJECT</p><h1 id="active-name">Project</h1><p id="active-root" class="project-root"></p></div>
+          <button id="index-button" class="button button-primary">Build index</button>
+        </div>
+        <div id="index-status" class="index-status">Index not built yet.</div>
+        <div id="index-progress" class="index-progress hidden">
+          <div class="index-progress-heading"><strong id="index-progress-label">queued</strong><span id="index-progress-count"></span></div>
+          <progress id="index-progress-bar" max="100" value="0"></progress>
+          <div id="index-progress-details" class="index-progress-details"></div>
+          <button id="resume-button" class="button button-secondary hidden" type="button">Resume indexing</button>
+        </div>
+        <div class="tabs" role="tablist">
+          <button class="tab active" id="chat-tab" role="tab" aria-selected="true">Codebase Q&amp;A</button>
+          <button class="tab" id="prompt-tab" role="tab" aria-selected="false">Prompt Builder</button>
+        </div>
+        <section id="chat-panel" class="panel" role="tabpanel">
+          <div class="panel-intro"><h2>Ask your codebase</h2><p>Answers separate observed facts from inference and link to retrieved code.</p></div>
+          <div id="chat-messages" class="chat-messages"></div>
+          <form id="ask-form" class="composer">
+            <textarea id="question" rows="2" maxlength="2000" placeholder="Where is the request flow handled? Which functions write to this table?" required></textarea>
+            <button class="button button-primary" type="submit">Ask <span>↗</span></button>
+          </form>
+        </section>
+        <section id="prompt-panel" class="panel hidden" role="tabpanel">
+          <div class="panel-intro"><h2>Prepare a Claude Code prompt</h2><p>Ground the task in retrieved project files. Nothing is sent to Claude or used to modify your project.</p></div>
+          <form id="prompt-form" class="prompt-form">
+            <label for="prompt-request">What do you want to accomplish?</label>
+            <textarea id="prompt-request" rows="3" maxlength="2000" placeholder="Add request validation to the API flow without changing the response format." required></textarea>
+            <label for="clarifications">Constraints or answers to questions <span class="optional">(optional)</span></label>
+            <textarea id="clarifications" rows="2" maxlength="2000" placeholder="Compatibility, scope, acceptance criteria…"></textarea>
+            <button class="button button-primary" type="submit">Build prompt <span>↗</span></button>
+          </form>
+          <div id="clarifying-questions" class="clarifying-questions hidden"></div>
+          <div id="prompt-result" class="prompt-result hidden">
+            <div class="prompt-result-heading"><h3>Ready to paste into Claude Code</h3><button id="copy-prompt" class="button button-secondary">Copy prompt</button></div>
+            <textarea id="generated-prompt" rows="18" readonly></textarea>
+            <div id="prompt-sources" class="source-list"></div>
+          </div>
+        </section>
+        <section class="search-section">
+          <div class="search-heading"><div><h2>Search indexed code</h2><p>Find files, symbols, and parsed comments.</p></div></div>
+          <form id="search-form" class="search-form"><input id="search-query" maxlength="500" placeholder="Search functions, files, or concepts"><button class="button button-secondary" type="submit">Search</button></form>
+          <div id="search-results" class="search-results"></div>
+        </section>
+      </section>
+    </section>
+  </main>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <dialog id="source-dialog" class="source-dialog">
+    <div class="dialog-heading"><div><strong id="source-title">Source</strong><small id="source-range"></small></div><button id="close-source" class="icon-button" aria-label="Close">×</button></div>
+    <pre><code id="source-content"></code></pre>
+  </dialog>
+  <script src="/app.js" defer></script>
+</body>
+</html>

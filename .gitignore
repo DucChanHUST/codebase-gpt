@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.codebase-gpt/
+.env
+.env.*
+!.env.example
+*.log
